@@ -101,15 +101,17 @@
     async function processRecoveryToken() {
       try {
         const params = getUrlParams();
+        console.log("Parámetros recibidos:", params); // Para depuración
         
         // Verificar si hay un token de tipo "recovery"
         if (params.type === 'recovery' && params.token) {
           // Procesar el token de recuperación y redirigir a la página de contraseña
-          // con los parámetros necesarios
           const { data, error } = await supabase.auth.verifyOtp({
-            token_hash: params.token,
+            token: params.token,  // CORREGIDO: usar 'token' en lugar de 'token_hash'
             type: 'recovery'
           });
+          
+          console.log("Respuesta de verifyOtp:", data, error); // Para depuración
           
           if (error) throw error;
           
