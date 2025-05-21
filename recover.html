@@ -105,22 +105,11 @@
         
         // Verificar si hay un token de tipo "recovery"
         if (params.type === 'recovery' && params.token) {
-          // Procesar el token de recuperación y redirigir a la página de contraseña
-          const { data, error } = await supabase.auth.verifyOtp({
-            token: params.token,  // CORREGIDO: usar 'token' en lugar de 'token_hash'
-            type: 'recovery'
-          });
-          
-          console.log("Respuesta de verifyOtp:", data, error); // Para depuración
-          
-          if (error) throw error;
-          
-          // Redirigir a la página de cambio de contraseña con el token
-          if (data && data.session) {
-            window.location.href = `password.html#access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}&type=recovery`;
-          } else {
-            throw new Error('No se pudo recuperar la sesión');
-          }
+          // Método 1: Redirección directa a password.html con el token
+          // La API de Supabase verifyOtp requiere email además del token
+          // Como alternativa, pasamos el token directamente a password.html
+          // y dejamos que esa página maneje la verificación del token
+          window.location.href = `password.html#token=${params.token}&type=recovery`;
         } else {
           throw new Error('Parámetros de recuperación inválidos');
         }
