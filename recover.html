@@ -72,7 +72,7 @@
     // Inicializar Supabase
     const supabaseUrl = 'https://pslxinqwlxvautqrexoz.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzbHhpbnF3bHh2YXV0cXJleG96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzMzQxMDMsImV4cCI6MjA2MDkxMDEwM30.Kjf7NQEY88n2cNW4qY1dfCU_SNxPl1WBaIRLyR4KqgM';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Función para obtener los parámetros de la URL
     function getUrlParams() {
