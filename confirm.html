@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
+<html lang="es">Add commentMore actions
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirección de Supabase</title>
   <title>Cuenta confirmada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
       background-color: #e8f5e9;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
@@ -16,8 +18,11 @@
       margin: 0;
     }
     .card {
+      background: white;
       background-color: white;
       padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       text-align: center;
@@ -34,34 +39,12 @@
   </style>
 </head>
 <body>
-  <div class="card" id="content">
-    <h1>🔄 Confirmando cuenta...</h1>
-    <p>Un momento, por favor.</p>
+  <div class="card">
+    <h1>✔️ ¡Todo listo!</h1>
+    <p>Tu correo ha sido confirmado o tu contraseña se ha actualizado correctamente.</p>
+    <p>Ya puedes volver a la app.</p>
+    <h1>✔️ ¡Cuenta confirmada!</h1>
+    <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
   </div>
-
-  <script>
-    const supabase = supabase.createClient(
-      'https://pslxinqwlxvautqrexoz.supabase.co', // tu URL de Supabase
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzbHhpbnF3bHh2YXV0cXJleG96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzMzQxMDMsImV4cCI6MjA2MDkxMDEwM30.Kjf7NQEY88n2cNW4qY1dfCU_SNxPl1WBaIRLyR4KqgM' // tu anon key
-    );
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const content = document.getElementById('content');
-
-      try {
-        const { error } = await supabase.auth.getSessionFromUrl();
-        if (error) {
-          content.innerHTML = `<h1>❌ Error al confirmar</h1><p>${error.message}</p>`;
-        } else {
-          content.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
-          `;
-        }
-      } catch (e) {
-        content.innerHTML = `<h1>❌ Error inesperado</h1><p>${e.message}</p>`;
-      }
-    });
-  </script>
 </body>
 </html>
