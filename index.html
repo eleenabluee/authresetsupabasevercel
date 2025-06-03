@@ -62,59 +62,74 @@
     // Mostrar toda la información para debug
     const fullUrl = window.location.href;
     const hash = window.location.hash.substring(1);
+    const search = window.location.search.substring(1);
     
     document.getElementById('fullUrl').textContent = fullUrl;
     document.getElementById('hashInfo').textContent = hash || '(no hay hash)';
     
-    // Intentar parsear los parámetros
+    // Buscar parámetros en AMBOS lugares (hash Y query params)
     let paramsText = '';
+    let token = null;
+    let type = null;
+    
+    // Primero intentar en hash
     if (hash) {
-      const params = new URLSearchParams(hash);
-      const allParams = {};
-      
-      for (let [key, value] of params) {
-        allParams[key] = value;
+      const hashParams = new URLSearchParams(hash);
+      paramsText += 'HASH PARAMS:\n';
+      for (let [key, value] of hashParams) {
         paramsText += `${key}: ${value}\n`;
+        if (key === 'access_token') token = value;
+        if (key === 'type') type = value;
       }
-      
-      document.getElementById('paramsInfo').textContent = paramsText || 'No se encontraron parámetros válidos';
-      
-      // Lógica original
-      const token = params.get('access_token');
-      const type = params.get('type');
-      const resultDiv = document.getElementById('result');
-      
-      if (token) {
-        if (type === 'signup') {
-          resultDiv.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
-          `;
-        } else if (type === 'recovery') {
-          window.location.href = '/password.html#' + hash;
-        } else if (type === 'email_change') {
-          resultDiv.innerHTML = `
-            <h1>📧 Email actualizado</h1>
-            <p>Tu dirección de correo se ha cambiado correctamente.</p>
-          `;
-        } else {
-          // Token presente pero tipo desconocido
-          resultDiv.innerHTML = `
-            <h1>✔️ ¡Probablemente confirmado!</h1>
-            <p>Se encontró un token pero no se especificó el tipo. Esto suele pasar en confirmaciones de signup.</p>
-          `;
-        }
+    }
+    
+    // Luego intentar en query parameters
+    if (search) {
+      const queryParams = new URLSearchParams(search);
+      paramsText += '\nQUERY PARAMS:\n';
+      for (let [key, value] of queryParams) {
+        paramsText += `${key}: ${value}\n`;
+        if (key === 'access_token' && !token) token = value;
+        if (key === 'type' && !type) type = value;
+      }
+    }
+    
+    // También buscar en la URL directamente por si hay formato diferente
+    const urlParts = fullUrl.split('?')[1] || '';
+    if (urlParts) {
+      paramsText += '\nURL DESPUÉS DE ?:\n' + urlParts + '\n';
+    }
+    
+    document.getElementById('paramsInfo').textContent = paramsText || 'No se encontraron parámetros';
+    
+    // Lógica de resultado
+    const resultDiv = document.getElementById('result');
+    
+    if (token) {
+      if (type === 'signup') {
+        resultDiv.innerHTML = `
+          <h1>✔️ ¡Cuenta confirmada!</h1>
+          <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+        `;
+      } else if (type === 'recovery') {
+        window.location.href = '/password.html#' + hash;
+      } else if (type === 'email_change') {
+        resultDiv.innerHTML = `
+          <h1>📧 Email actualizado</h1>
+          <p>Tu dirección de correo se ha cambiado correctamente.</p>
+        `;
       } else {
         resultDiv.innerHTML = `
-          <h1>❌ Sin token</h1>
-          <p>No se encontró access_token en el enlace.</p>
+          <h1>✔️ ¡Token encontrado!</h1>
+          <p>Se encontró un token de acceso. Tipo: ${type || 'no especificado'}</p>
         `;
       }
     } else {
-      document.getElementById('paramsInfo').textContent = 'No hay hash en la URL';
-      document.getElementById('result').innerHTML = `
-        <h1>❌ Sin hash</h1>
-        <p>No se encontró información en la URL.</p>
+      resultDiv.innerHTML = `
+        <h1>❌ Información de debug</h1>
+        <p>No se encontró access_token en ningún formato.</p>
+        <p>Hash: "${hash}"</p>
+        <p>Query: "${search}"</p>
       `;
     }
   </script>
