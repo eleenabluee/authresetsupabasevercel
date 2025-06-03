@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Cuenta confirmada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       background-color: #e8f5e9;
@@ -33,9 +34,34 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>✔️ ¡Cuenta confirmada!</h1>
-    <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+  <div class="card" id="status">
+    <h1>🔄 Confirmando tu cuenta...</h1>
+    <p>Un momento, por favor.</p>
   </div>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://pslxinqwlxvautqrexoz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzbHhpbnF3bHh2YXV0cXJleG96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzMzQxMDMsImV4cCI6MjA2MDkxMDEwM30.Kjf7NQEY88n2cNW4qY1dfCU_SNxPl1WBaIRLyR4KqgM'
+    );
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const status = document.getElementById('status');
+
+      const { error } = await supabase.auth.getSessionFromUrl();
+
+      if (error) {
+        status.innerHTML = `
+          <h1>❌ Error</h1>
+          <p>${error.message}</p>
+        `;
+      } else {
+        status.innerHTML = `
+          <h1>✔️ ¡Cuenta confirmada!</h1>
+          <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>
