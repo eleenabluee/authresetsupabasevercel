@@ -39,29 +39,31 @@
   </div>
 
   <script>
-    const content = document.getElementById('content');
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const type = params.get('type');
+  const content = document.getElementById('content');
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
 
-    if (type === 'signup') {
-      content.innerHTML = `
-        <h1>✔️ ¡Cuenta confirmada!</h1>
-        <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
-      `;
-    } else if (type === 'recovery') {
-      window.location.href = '/password.html';
-    } else if (type === 'email_change') {
-      content.innerHTML = `
-        <h1>📧 Email actualizado</h1>
-        <p>Tu dirección de correo se ha cambiado correctamente.</p>
-      `;
-    } else {
-      content.innerHTML = `
-        <h1>❌ Enlace no válido</h1>
-        <p>El tipo de enlace no es reconocido o ha expirado.</p>
-      `;
-    }
-  </script>
+  const token = params.get('access_token');
+  const type = params.get('type');
+
+  if (type === 'signup' && token) {
+    content.innerHTML = `
+      <h1>✔️ ¡Cuenta confirmada!</h1>
+      <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+    `;
+  } else if (type === 'recovery' && token) {
+    window.location.href = '/password.html#' + hash;
+  } else if (type === 'email_change' && token) {
+    content.innerHTML = `
+      <h1>📧 Email actualizado</h1>
+      <p>Tu dirección de correo se ha cambiado correctamente.</p>
+    `;
+  } else {
+    content.innerHTML = `
+      <h1>❌ Enlace no válido</h1>
+      <p>El tipo de enlace no es reconocido o ha expirado.</p>
+    `;
+  }
+</script>
 </body>
 </html>
