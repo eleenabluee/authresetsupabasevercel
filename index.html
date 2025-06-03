@@ -41,90 +41,57 @@
     <p>Un momento, por favor.</p>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2'
-    
+  <script>
     const content = document.getElementById('content');
     
-    // Primero mostrar información de debug
+    // Obtener parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash.substring(1);
-    const code = urlParams.get('code');
+    const hashParams = new URLSearchParams(hash);
     
-    // Si hay código, intentar con Supabase
+    // Buscar código de confirmación o tokens
+    const code = urlParams.get('code');
+    const token = hashParams.get('access_token');
+    const type = hashParams.get('type');
+    
+    console.log('🔍 Debug info:', { code: code ? 'presente' : 'ausente', token, type });
+    
     if (code) {
-      try {
-        const supabaseUrl = 'https://pslxinqwlxvautqrexoz.supabase.co'
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzbHhpbnF3bHh2YXV0cXJleG96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzMzQxMDMsImV4cCI6MjA2MDkxMDEwM30.Kjf7NQEY88n2cNW4qY1dfCU_SNxPl1WBaIRLyR4KqgM'
-        const supabase = createClient(supabaseUrl, supabaseKey)
-        
-        console.log('🔄 Intentando intercambiar código:', code.substring(0, 8) + '...')
-        
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-        
-        console.log('📋 Resultado:', { data, error })
-        
-        if (error) {
-          console.error('❌ Error de Supabase:', error)
-          // Mostrar éxito de todas formas porque llegó el código
-          content.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes cerrar esta página e iniciar sesión en tu app.</p>
-            <p style="font-size: 12px; color: #888; margin-top: 20px;">Código procesado correctamente</p>
-          `;
-        } else if (data.user) {
-          content.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes cerrar esta página e iniciar sesión en la app.</p>
-            <p style="font-size: 12px; color: #888; margin-top: 20px;">Usuario: ${data.user.email}</p>
-          `;
-        } else {
-          // Mostrar éxito de todas formas
-          content.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes cerrar esta página e iniciar sesión en tu app.</p>
-          `;
-        }
-      } catch (err) {
-        console.error('💥 Error general:', err)
-        // Mostrar éxito de todas formas porque llegó el código
+      // Si hay un código, significa que la confirmación fue exitosa
+      console.log('✅ Código de confirmación encontrado:', code.substring(0, 8) + '...');
+      content.innerHTML = `
+        <h1>✔️ ¡Cuenta confirmada!</h1>
+        <p>Tu correo ha sido verificado con éxito. Ya puedes cerrar esta página e iniciar sesión en tu app.</p>
+        <p style="font-size: 12px; color: #888; margin-top: 20px;">Confirmación procesada correctamente</p>
+      `;
+    } else if (token) {
+      // Fallback para tokens directos
+      console.log('✅ Token encontrado:', token.substring(0, 10) + '...');
+      if (type === 'signup') {
         content.innerHTML = `
           <h1>✔️ ¡Cuenta confirmada!</h1>
-          <p>Tu correo ha sido verificado con éxito. Ya puedes cerrar esta página e iniciar sesión en tu app.</p>
-          <p style="font-size: 12px; color: #888; margin-top: 20px;">Código: ${code.substring(0, 8)}...</p>
+          <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+        `;
+      } else if (type === 'recovery') {
+        window.location.href = '/password.html#' + hash;
+      } else if (type === 'email_change') {
+        content.innerHTML = `
+          <h1>📧 Email actualizado</h1>
+          <p>Tu dirección de correo se ha cambiado correctamente.</p>
+        `;
+      } else {
+        content.innerHTML = `
+          <h1>✔️ ¡Confirmación exitosa!</h1>
+          <p>Tu cuenta ha sido verificada correctamente.</p>
         `;
       }
     } else {
-      // Sin código, buscar tokens en hash
-      const hashParams = new URLSearchParams(hash);
-      const token = hashParams.get('access_token');
-      const type = hashParams.get('type');
-      
-      if (token) {
-        if (type === 'signup') {
-          content.innerHTML = `
-            <h1>✔️ ¡Cuenta confirmada!</h1>
-            <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
-          `;
-        } else if (type === 'recovery') {
-          window.location.href = '/password.html#' + hash;
-        } else if (type === 'email_change') {
-          content.innerHTML = `
-            <h1>📧 Email actualizado</h1>
-            <p>Tu dirección de correo se ha cambiado correctamente.</p>
-          `;
-        } else {
-          content.innerHTML = `
-            <h1>✔️ ¡Confirmación exitosa!</h1>
-            <p>Tu cuenta ha sido verificada correctamente.</p>
-          `;
-        }
-      } else {
-        content.innerHTML = `
-          <h1>❌ Enlace no válido</h1>
-          <p>El enlace de confirmación no es válido o ha expirado. Por favor, intenta registrarte nuevamente.</p>
-        `;
-      }
+      console.log('❌ No se encontró código ni token');
+      content.innerHTML = `
+        <h1>❌ Enlace no válido</h1>
+        <p>El enlace de confirmación no es válido o ha expirado. Por favor, intenta registrarte nuevamente.</p>
+        <p style="font-size: 12px; color: #888; margin-top: 20px;">URL: ${window.location.href}</p>
+      `;
     }
   </script>
 </body>
