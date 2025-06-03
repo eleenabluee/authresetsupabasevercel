@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #e8f5e9;
+      background-color: 
+#e8f5e9;
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
@@ -23,87 +24,20 @@
       max-width: 400px;
     }
     h1 {
-      color: #2e7d32;
+      color: 
+#2e7d32;
       font-size: 1.8rem;
     }
     p {
       margin-top: 1rem;
       color: #555;
     }
-    .loading {
-      color: #1976d2;
-      font-size: 1.2rem;
-    }
-    .error {
-      color: #d32f2f;
-    }
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #1976d2;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
   <div class="card">
-    <!-- Estado inicial: Cargando -->
-    <div id="loading-state">
-      <h1 class="loading">Confirmando...</h1>
-      <div class="spinner"></div>
-      <p>Verificando tu cuenta, por favor espera...</p>
-    </div>
-    
-    <!-- Estado de éxito -->
-    <div id="success-state" style="display: none;">
-      <h1>✔️ ¡Cuenta confirmada!</h1>
-      <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
-    </div>
-    
-    <!-- Estado de error -->
-    <div id="error-state" style="display: none;">
-      <h1 class="error">❌ Error</h1>
-      <p id="error-message">Hubo un problema al confirmar tu cuenta.</p>
-    </div>
+    <h1>✔️ ¡Cuenta confirmada!</h1>
+    <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
   </div>
-
-  <script>
-    // Función para mostrar estado de éxito
-    function showSuccess() {
-      document.getElementById('loading-state').style.display = 'none';
-      document.getElementById('success-state').style.display = 'block';
-    }
-    
-    // Función para mostrar estado de error
-    function showError(message) {
-      document.getElementById('loading-state').style.display = 'none';
-      document.getElementById('error-message').textContent = message || 'Error desconocido al confirmar la cuenta.';
-      document.getElementById('error-state').style.display = 'block';
-    }
-    
-    // Verificar si hay parámetros en la URL que indiquen éxito o error
-    window.addEventListener('load', function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get('error');
-      const errorDescription = urlParams.get('error_description');
-      
-      // Si hay error en los parámetros
-      if (error) {
-        showError(errorDescription || 'Error al confirmar la cuenta');
-        return;
-      }
-      
-      // Si no hay error, asumimos que fue exitoso
-      // (Supabase redirige aquí solo si la confirmación fue exitosa)
-      setTimeout(showSuccess, 1500); // Simular un poco de carga
-    });
-  </script>
 </body>
 </html>
