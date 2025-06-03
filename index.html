@@ -1,10 +1,67 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Redireccionando...</title>
-    <meta http-equiv="refresh" content="0; url=password.html" />
-  </head>
-  <body>
-  </body>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autenticación</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background-color: #f0fdf4;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #2e7d32;
+    }
+    p {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="content">
+    <h1>Cargando...</h1>
+    <p>Un momento, por favor.</p>
+  </div>
+
+  <script>
+    const content = document.getElementById('content');
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const type = params.get('type');
+
+    if (type === 'signup') {
+      content.innerHTML = `
+        <h1>✔️ ¡Cuenta confirmada!</h1>
+        <p>Tu correo ha sido verificado con éxito. Ya puedes iniciar sesión en la app.</p>
+      `;
+    } else if (type === 'recovery') {
+      window.location.href = '/password.html';
+    } else if (type === 'email_change') {
+      content.innerHTML = `
+        <h1>📧 Email actualizado</h1>
+        <p>Tu dirección de correo se ha cambiado correctamente.</p>
+      `;
+    } else {
+      content.innerHTML = `
+        <h1>❌ Enlace no válido</h1>
+        <p>El tipo de enlace no es reconocido o ha expirado.</p>
+      `;
+    }
+  </script>
+</body>
 </html>
